@@ -3,7 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 
-/* serial interface for the pro-lite pl-m2014r LED sign */
+/* Andrew Fuller <abf@google.com>
+   serial interface for the pro-lite pl-m2014r LED sign
+*/
 
 /*
 working serial settings:
