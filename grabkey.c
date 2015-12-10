@@ -2,6 +2,14 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 
+/* Andrew Fuller <abf@google.com>
+
+   Globally capture an X11 key:
+   $ cc grabkey.c -lX11 -o grabkey
+   $ ./grabkey 15 KP_Page_Down
+   $ echo $?
+*/
+
 #define TIMEOUT 5
 #define KEY "Escape"
 
