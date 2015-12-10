@@ -1,0 +1,70 @@
+#!/bin/sh
+
+PORT1=p1p1
+PORT2=p1p2
+PORT3=p1p3
+PORT4=p1p4
+
+PORT1_IP=192.168.1.1
+PORT2_IP=192.168.2.1
+PORT3_IP=192.168.3.1
+PORT4_IP=192.168.4.1
+
+PORT1_IP_ALT=192.169.1.1
+PORT2_IP_ALT=192.169.2.1
+PORT3_IP_ALT=192.169.3.1
+PORT4_IP_ALT=192.169.4.1
+
+if [ $EUID -ne 0 ]; then
+	echo "must run as root"
+	exit 1
+fi
+
+if [ "$1" = up ]; then
+	ip addr add $PORT1_IP/32 dev $PORT1
+	ip addr add $PORT2_IP/32 dev $PORT2
+	ip addr add $PORT3_IP/32 dev $PORT3
+	ip addr add $PORT4_IP/32 dev $PORT4
+
+	iptables -t nat -A POSTROUTING -s $PORT1_IP -d $PORT2_IP_ALT -j SNAT --to-source $PORT1_IP_ALT
+	iptables -t nat -A POSTROUTING -s $PORT2_IP -d $PORT1_IP_ALT -j SNAT --to-source $PORT2_IP_ALT
+	iptables -t nat -A POSTROUTING -s $PORT3_IP -d $PORT4_IP_ALT -j SNAT --to-source $PORT3_IP_ALT
+	iptables -t nat -A POSTROUTING -s $PORT4_IP -d $PORT3_IP_ALT -j SNAT --to-source $PORT4_IP_ALT
+
+	iptables -t nat -A PREROUTING -d $PORT1_IP_ALT -j DNAT --to-destination $PORT1_IP
+	iptables -t nat -A PREROUTING -d $PORT2_IP_ALT -j DNAT --to-destination $PORT2_IP
+	iptables -t nat -A PREROUTING -d $PORT3_IP_ALT -j DNAT --to-destination $PORT3_IP
+	iptables -t nat -A PREROUTING -d $PORT4_IP_ALT -j DNAT --to-destination $PORT4_IP
+
+	ip route add $PORT2_IP_ALT dev $PORT1
+	ip route add $PORT1_IP_ALT dev $PORT2
+	ip route add $PORT4_IP_ALT dev $PORT3
+	ip route add $PORT3_IP_ALT dev $PORT4
+
+	arp -i $PORT1 -s $PORT2_IP_ALT $(cat /sys/class/net/$PORT2/address)
+	arp -i $PORT2 -s $PORT1_IP_ALT $(cat /sys/class/net/$PORT1/address)
+	arp -i $PORT3 -s $PORT4_IP_ALT $(cat /sys/class/net/$PORT4/address)
+	arp -i $PORT4 -s $PORT3_IP_ALT $(cat /sys/class/net/$PORT3/address)
+elif [ "$1" = down ]; then
+	ip route del $PORT2_IP_ALT dev $PORT1
+	ip route del $PORT1_IP_ALT dev $PORT2
+	ip route del $PORT4_IP_ALT dev $PORT3
+	ip route del $PORT3_IP_ALT dev $PORT4
+
+	iptables -t nat -D PREROUTING -d $PORT1_IP_ALT -j DNAT --to-destination $PORT1_IP
+	iptables -t nat -D PREROUTING -d $PORT2_IP_ALT -j DNAT --to-destination $PORT2_IP
+	iptables -t nat -D PREROUTING -d $PORT3_IP_ALT -j DNAT --to-destination $PORT3_IP
+	iptables -t nat -D PREROUTING -d $PORT4_IP_ALT -j DNAT --to-destination $PORT4_IP
+
+	iptables -t nat -D POSTROUTING -s $PORT1_IP -d $PORT2_IP_ALT -j SNAT --to-source $PORT1_IP_ALT
+	iptables -t nat -D POSTROUTING -s $PORT2_IP -d $PORT1_IP_ALT -j SNAT --to-source $PORT2_IP_ALT
+	iptables -t nat -D POSTROUTING -s $PORT3_IP -d $PORT4_IP_ALT -j SNAT --to-source $PORT3_IP_ALT
+	iptables -t nat -D POSTROUTING -s $PORT4_IP -d $PORT3_IP_ALT -j SNAT --to-source $PORT4_IP_ALT
+
+	ip addr del $PORT1_IP/32 dev $PORT1
+	ip addr del $PORT2_IP/32 dev $PORT2
+	ip addr del $PORT3_IP/32 dev $PORT3
+	ip addr del $PORT4_IP/32 dev $PORT4
+else
+	echo "usage: $0 [up | down]"
+fi

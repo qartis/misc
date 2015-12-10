@@ -1,0 +1,20 @@
+#!/usr/bin/python
+from subprocess import call
+import urllib2
+import json
+import os
+
+colors = {'FAILING': '<CC>',
+          'PASSING': '<CL>',
+          'UNKNOWN': '<CH>'};
+
+page = urllib2.urlopen('https://test.corp.google.com/api_v2/currentProjectInfo?project=gfiber_nms&author=abf@google.com&format=json')
+data = json.loads(page.read())
+
+status = data['projects']['gfiber_nms']['statusEnum']
+
+if status not in colors:
+  status = 'UNKNOWN'
+
+output = '<PA><FI>{}{}'.format(colors[status], status)
+call(['{}/bin/sign'.format(os.environ['HOME']), output, '1'])

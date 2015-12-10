@@ -1,0 +1,17 @@
+#!/bin/sh
+file=$HOME/out.gif
+timeout=10
+#it's important that 1/fps is an integer multiple of 10ms, and >= 20ms
+fps=20
+
+if [ "$#" -eq 1 ]; then
+    timeout=$1
+fi
+
+bounds=$(xrectsel '%x %y %w %h')
+set $bounds
+
+avconv -y -f x11grab -show_region 1 -video_size $3x$4 -i :0.0+$1,$2 -pix_fmt rgb24 -r $fps $file &
+grabkey $timeout
+kill -INT $!
+convert -delay 1x$fps $file $file

@@ -1,0 +1,9 @@
+#!/usr/bin/python
+from bs4 import BeautifulSoup
+import urllib2
+
+url = 'http://kfjc.org/music/playlist.php'
+page = urllib2.urlopen(url)
+soup = BeautifulSoup(page.read())
+details = soup.find_all("tr")[-1].find_all("td")
+print details[0].get_text(), "-", details[1].get_text()

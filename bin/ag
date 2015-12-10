@@ -1,0 +1,36 @@
+#!/bin/bash
+bold=$(tput bold)$(tput setaf 4)
+reset=$(echo -ne "\x1b[m")
+#echo ESC[m directly because less -R doesn't handle ^O, and prints it to the screen
+
+display_shortcuts() {
+    awk -F':' '
+    BEGIN {x=1};
+    {
+        if (NF > 0) {
+            printf("'$bold'%s'$reset' ", x);
+            printf("%s", $0);
+            x++;
+        }
+        printf("\n");
+    };'
+}
+
+nocolor() {
+    sed "s/\x1B\[\([0-9]\{1,2\}\(;[0-9]\{1,2\}\)\?\)\?[mGKH]//g"
+}
+
+delempty() {
+    sed '/^$/d'
+}
+
+process_shortcut_paths() {
+    # Using : as the delimiter here should be fine, because : is not used in file names
+    awk -F':' '
+    {
+        ("readlink -f \"" $1 "\"") | getline fullpath;
+        print $2 " " fullpath ;
+    };'
+}
+
+~/bin/ag_patched --color --silent --noheading --nobreak -f "$@" | tee >(nocolor | delempty | process_shortcut_paths | sponge ~/.sag) | display_shortcuts

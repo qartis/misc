@@ -1,0 +1,18 @@
+#!/usr/bin/python
+from bs4 import BeautifulSoup
+import urllib
+import urllib2
+import os
+import re
+
+os.chdir(os.path.expanduser("~/archive.kfjc.org"))
+
+url = 'http://kfjc.org/music/pl-weekly.php'
+page = urllib2.urlopen(url)
+soup = BeautifulSoup(page.read())
+table = soup.find_all('td',colspan=3)[0]
+
+p = re.compile('"([0-9]{5,})"')
+ids = p.findall(str(table))
+for id in ids:
+  urllib.urlretrieve('http://kfjc.org/music/playlist.php?i=%s' % id, id)
