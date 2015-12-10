@@ -1,4 +1,6 @@
 #!/bin/sh
+# Andrew Fuller <abf@google.com>
+
 file=$HOME/out.gif
 timeout=10
 #it's important that 1/fps is an integer multiple of 10ms, and >= 20ms
