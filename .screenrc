@@ -1,0 +1,15 @@
+defscrollback 200000
+vbell off
+bell_msg ""
+escape ^aa
+bindkey "^[[5;2~" eval "copy" "stuff ^b"
+bindkey "^[[6;2~" eval "copy" "stuff ^f"
+startup_message off
+altscreen on
+#register s "^a:hardcopy -h^m"
+#bindkey ^a,, process s
+#logtstamp on
+#deflog on
+logfile /tmp/screen-%Y%m%d%c%s-%n.log
+deflog on
+wrap on
