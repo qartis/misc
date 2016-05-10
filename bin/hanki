@@ -1,0 +1,2 @@
+#!/bin/zsh
+shuf -n ${1:-1} ~/cards.txt | while IFS=":" read -r word desc; do (echo "$word"; read -s -k 1; echo "$desc") done
