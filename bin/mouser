@@ -1,0 +1,3 @@
+#!/bin/sh
+PART_NUM=$(xclip -o)
+google-chrome "http://www.mouser.com/Search/Refine.aspx?Keyword=$PART_NUM"

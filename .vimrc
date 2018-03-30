@@ -1,6 +1,6 @@
 set nocompatible
 set bs=2
-set viminfo='200,\"400
+set viminfo='500,\"800
 set history=200
 set splitright
 set showcmd
@@ -33,7 +33,7 @@ set smartcase
 set novisualbell "lags due to beeping when you scroll past the end of the window
 set nowrap
 set lazyredraw
-set listchars=tab:>-,trail:.,extends:> "show whitespace
+"set listchars=tab:>-,trail:.,extends:> "show whitespace
 "set list "show whitespace
 
 """"""""""""""""""""""""""""""""""""""""""""""""
@@ -119,9 +119,9 @@ autocmd VimLeave * call system("xsel -ib", getreg('+'))
 set diffopt+=vertical
 let c_gnu = 1
 let c_curly_error = 1
-"let c_space_errors=1
+let c_space_errors=1
 
-autocmd BufWinEnter * if line2byte(line("$") + 1) > 50000 | syntax clear | endif
+"autocmd BufWinEnter * if line2byte(line("$") + 1) > 50000 | syntax clear | endif
 
 set foldcolumn=0
 set nofoldenable
@@ -129,6 +129,7 @@ set backupcopy=auto
 if &diff
     set foldmethod=manual
     set nofoldenable
+    set diffopt+=context:99999
 endif
 
 " search text object
@@ -146,9 +147,13 @@ if &diff
     set diffopt+=iwhite
 endif
 
-set nrformats=octal,hex,alpha
+set nrformats=hex,alpha
 au BufNewFile,BufRead *.c setf c
 filetype on
 au BufNewFile,BufRead *_defconfig setfiletype conf
 
 let g:MultipleSearchMaxColors=16
+"source /usr/share/vim/google/google.vim
+syntax on
+let g:pymode_rope = 0
+map <leader>d :silent w !tmux-stdin dremel<enter>

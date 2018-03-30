@@ -13,3 +13,6 @@ altscreen on
 logfile /tmp/screen-%Y%m%d%c%s-%n.log
 deflog on
 wrap on
+
+defutf8 on
+defencoding utf8

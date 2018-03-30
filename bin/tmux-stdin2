@@ -1,0 +1,10 @@
+#!/bin/bash
+IFS=
+while read -rn1; do
+  if [ "$REPLY" = ";" ]; then
+    tmux send-keys -t dremel "\;";
+    tmux send-keys -t dremel Enter;
+  else
+    tmux send-keys -t dremel "$REPLY";
+  fi;
+done

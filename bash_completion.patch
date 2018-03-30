@@ -1,0 +1,18 @@
+# So that if you're in a directory with only 1 subdirectory inside it, and you type
+# 
+# $ cd <Tab>
+#
+# it will only autocomplete to that subdirectory, rather than listing a menu containing
+# all of the choices in CDPATH
+
+--- /usr/share/bash-completion/bash_completion	2015-06-16 17:02:01.125794459 -0700
++++ /usr/share/bash-completion/bash_completion	2015-06-16 17:01:49.773654236 -0700
+@@ -1601,7 +1601,7 @@
+ 
+     # Use standard dir completion if no CDPATH or parameter starts with /,
+     # ./ or ../
+-    if [[ -z "${CDPATH:-}" || "$cur" == ?(.)?(.)/* ]]; then
++    if [[ -z "${CDPATH:-}" || -z "$cur" || "$cur" == ?(.)?(.)/* ]]; then
+         _filedir -d
+         return 0
+     fi

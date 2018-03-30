@@ -33,4 +33,5 @@ process_shortcut_paths() {
     };'
 }
 
-~/bin/ag_patched --color --silent --noheading --nobreak -f "$@" | tee >(nocolor | delempty | process_shortcut_paths | sponge ~/.sag) | display_shortcuts
+#~/bin/ag_patched --color --silent --noheading --nobreak -f "$@" | tee >(nocolor | delempty | dos2unix | process_shortcut_paths | sponge ~/.sag) | dos2unix | display_shortcuts
+TERM=st ~/bin/rg_bin --hidden -i --color=always --no-heading -n "$@" | tee >(nocolor | delempty | process_shortcut_paths | sponge ~/.sag) | display_shortcuts

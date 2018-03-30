@@ -1,0 +1,2 @@
+#!/bin/sh
+chwb -s 0 $(printf 0x%x $(xdotool selectwindow))
