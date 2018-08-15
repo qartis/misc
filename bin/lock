@@ -1,4 +1,8 @@
 #!/bin/sh
-( slock && xset dpms 0 0 0 ) &
-xset dpms 0 0 10
-xset dpms force off
+trap "xset dpms 0 0 0" EXIT
+(while true; do xset dpms force off; sleep 1800; done) &
+slock && kill %%
+#xset dpms 0 0 10
+#( slock && xset dpms 0 0 0 ) &
+#xset dpms 0 0 10
+#xset dpms force off

@@ -1,0 +1,2 @@
+#!/bin/sh
+maim -s --format png /dev/stdout | xclip-png
