@@ -157,3 +157,5 @@ let g:MultipleSearchMaxColors=16
 syntax on
 let g:pymode_rope = 0
 map <leader>d :silent w !tmux-stdin dremel<enter>
+
+set nostartofline 
