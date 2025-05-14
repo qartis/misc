@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     Display *dpy = XOpenDisplay(0);
     Window root = DefaultRootWindow(dpy);
     int keysym = XStringToKeysym(KEY);
-    int keycode = XKeysymToKeycode(dpy, keysym);
+    int keycode;
     int timeout = TIMEOUT;
     XEvent ev;
 
@@ -27,6 +27,8 @@ int main(int argc, char **argv)
 
     if (argc > 2)
       keysym = XStringToKeysym(argv[2]);
+
+    keycode = XKeysymToKeycode(dpy, keysym);
 
     alarm(timeout);
     XGrabKey(dpy, keycode, AnyModifier, root, False, GrabModeAsync,
